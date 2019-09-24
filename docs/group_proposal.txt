@@ -1,0 +1,21 @@
+Python Chess
+
+by Peter Carter, Nick Kelly, and Arian Jahjaga
+
+    The project that we are proposing is essentially just the creation of a chess app in Python. The goals of the project
+include relearning python, learning how to write a complex AI algorithm, and potentially work with networking. We
+aren’t attempting to innovate and create a completely new product, we are simply working on solidifying our knowledges
+of the technologies required by this project.
+
+We will be following a very standard software development cycle, working in sprints and submitting deliverables every
+few weeks. The team will meet several times throughout each sprint, and specifically at the start of each sprint we
+will have a planning meeting to allocate work and discuss goals.
+
+While the exact structure of the product has not been entirely accounted for, we have come up with targets to aim for
+during each sprint. Ultimately, the final deliverable will be a python application that can be run from a desktop
+shortcut. Users will be taken to a start screen GUI that allows them to start a local game on their own computer, or
+to play against an AI. If the player chooses an AI, they will then choose a starting color and an AI difficulty. If the
+team works ahead of schedule and knocks out the final product with lots of time to spare, we will consider adding
+potentially more enhancements like online play, ranking, and replays.
+
+
