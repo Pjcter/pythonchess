@@ -8,9 +8,8 @@ class Square:
 
     #toString method
     def toString(self):
-        return self.num + self.letter;
+        return self.letter + str(self.num)
 
 
 # End class declaration
-
 
