@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>DesignDoc</title>
+  <style>
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1 id="project-design-documentation">Project Design Documentation</h1>
+<h2 id="team-members">Team Members:</h2>
+<pre><code>* Peter Carter
+* Nicholas Kelly
+* Arian Jahjaga</code></pre>
+<h2 id="minimum-viable-product-summary">Minimum Viable Product Summary</h2>
+<p>Our minimum viable product will be a Python executable that can be run from a desktop shortcut. Upon opening, users will be taken to a start screen where they may select to play a local game against another player or against an AI. Upon starting a game, users will be able to play legal chess as defined by the US Chess Federation’s rules.</p>
+<h2 id="requirements">Requirements</h2>
+<p>Our product must meet the following requirements to be defined as functional: * Players can launch a Python executable from their desktop * Players can select either to start a local normal game, or against an AI * Upon starting a game, a chess board is displayed with pieces on top of it * Pieces must be move-able via drag and drop. * Game play follows the rules of the US Chess Federation. * Games will conclude when checkmate is reached.</p>
+<h2 id="domain-model">Domain Model</h2>
+<figure>
+<img src="https://i.imgur.com/kANSdgI.png" alt="" /><figcaption>Domain Model of PythonChess</figcaption>
+</figure>
+<blockquote>
+<p>Our model is comprised of the following pieces:</p>
+</blockquote>
+<ul>
+<li>Board: This represents a chess board. It is made up of 64 squares</li>
+<li>Square: A single square on a chess board. It has a color attribute, and a coordinate.</li>
+<li>Piece: This is a super class representing all chess pieces. It has a type attribute, color, and makes moves</li>
+<li>Pawn, Rook, King, Queen, Knight, Bishop: These will all be subclasses of Piece, with essentially unique interpretations of a ‘move’ function.</li>
+<li>Player: represents one of the two players in a game of chess.</li>
+<li>Move: represents the move of a piece from one spot to another.</li>
+<li>Ruleset: A set of rules that dictate if a move is legal</li>
+</ul>
+<h2 id="summary-of-project-architecture">Summary of Project Architecture</h2>
+<h3 id="model-view-controller">Model View Controller</h3>
+<p>The general structure of our project will follow a model view controller (MVC) pattern.</p>
+<p>Here is an illustration of MVC design within a chess game:</p>
+<p><img src="mvc_diagram.png" /></p>
+<ul>
+<li>Model Tier: composed of Python classes representing entities described in our domain model. Chess buisness logic lives here.</li>
+<li>Controller Tier: Composed of UI Controller classes written in Python. These will handle requests from the GUI. Valid requests, namely valid moves or button presses, are relayed to the model.</li>
+<li>View: Our view is a Pygame GUI representing a chess board. Requests will be sent by dragging and dropping chess pieces</li>
+</ul>
+</body>
+</html>

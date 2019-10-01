@@ -10,6 +10,10 @@ class Piece:
     def toString(self):
         return self.color + " " + self.name
 
+    def isCapture(self):
+        print("Piece subclass has no isCapture implementation")
+        return EnvironmentError
+
 class Pawn(Piece):
     def __init__(self,color):
         Piece.__init__(self,color,1,"Pawn")

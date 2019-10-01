@@ -36,6 +36,9 @@ class Board:
         b["G8"].addPiece(Knight("Black"))
         b["H8"].addPiece(Rook("Black"))
         self.board = b
+        #Keeps track if white or black has castled
+        self.whiteCastle = False
+        self.blackCastle = False
 
     def getPieceList(self):
         pieces = []
@@ -50,6 +53,16 @@ class Board:
             result += " " + square.toString()
         return result
 
+    #Logic for determining if a board has a given piece on a given square
+    #Piece: Piece name
+    #Square: Square name. Must be a valid square name in string form "[Letter][Number]" eg "E4"
+    def hasPiece(self,piece,color,square):
+        s1 = self.board[square]
+        if(s1.piece!=None):
+            if(s1.piece.name == piece and s1.piece.color == color):
+                return True
+        return False
+
     def cloneBoard(self):
         newBoard = Board()
             #Remove all pieces
@@ -59,6 +72,8 @@ class Board:
             #Point new board squares to pieces
             if self.board[key].piece != None:
                 newBoard.board[key].addPiece(self.board[key].piece)
+        newBoard.whiteCastle = self.whiteCastle
+        newBoard.blackCastle = self.blackCastle
         return newBoard
     #Does not alter THIS board. Creates a new board, and makes the move on that board. And returns that board.
     def makeMove(self,square1Name,square2Name):

@@ -1,4 +1,4 @@
-# Project Design Documentation
+# Project Design Documentation: Python Chess
 
 ## Team Members:
     * Peter Carter
@@ -12,6 +12,7 @@ an AI. Upon starting a game, users will be able to play legal chess as defined b
 
 ## Requirements
 Our product must meet the following requirements to be defined as functional:
+
 * Players can launch a Python executable from their desktop
 * Players can select either to start a local normal game, or against an AI
 * Upon starting a game, a chess board is displayed with pieces on top of it
