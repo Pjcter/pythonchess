@@ -13,11 +13,4 @@ class Square:
             return self.letter + str(self.num) + ": " + self.piece.toString()
         return self.letter + str(self.num)
 
-    def addPiece(self,piece):
-        self.piece = piece
-
-    def removePiece(self):
-        self.piece = None
-
-
 # End class declaration

@@ -6,76 +6,96 @@ class Board:
 
     #Creates a new board
     def __init__(self):
-        b = {}
+        squares = []
         # Populate with squares
         for num in range(1,9):
             for letter in "ABCDEFGH":
-                b[letter+str(num)] = Square(letter,num)
-        #End for loop. squares is now populated with square objects key'd by their toString
-
+                squares.append(Square(letter,num))
+        #End for loop. squares is now populated with square objects
+        pieces = []
         # Now populate with pieces
         #Pawns
         for ltr in "ABCDEFGH":
-            b[ltr+"2"].addPiece(Pawn("White"))
-            b[ltr+"7"].addPiece(Pawn("Black"))
+            pieces.append((Pawn("White",ltr+"2")))
+            pieces.append((Pawn("Black",ltr+"7")))
         #Hardcoding other pieces
-        b["A1"].addPiece(Rook("White"))
-        b["B1"].addPiece(Knight("White"))
-        b["C1"].addPiece(Bishop("White"))
-        b["D1"].addPiece(Queen("White"))
-        b["E1"].addPiece(King("White"))
-        b["F1"].addPiece(Bishop("White"))
-        b["G1"].addPiece(Knight("White"))
-        b["H1"].addPiece(Rook("White"))
-        b["A8"].addPiece(Rook("Black"))
-        b["B8"].addPiece(Knight("Black"))
-        b["C8"].addPiece(Bishop("Black"))
-        b["D8"].addPiece(Queen("Black"))
-        b["E8"].addPiece(King("Black"))
-        b["F8"].addPiece(Bishop("Black"))
-        b["G8"].addPiece(Knight("Black"))
-        b["H8"].addPiece(Rook("Black"))
-        self.board = b
+        pieces.append(Rook("White","A1"))
+        pieces.append(Knight("White","B1"))
+        pieces.append(Bishop("White","C1"))
+        pieces.append(Queen("White","D1"))
+        pieces.append(King("White","E1"))
+        pieces.append(Bishop("White","F1"))
+        pieces.append(Knight("White","G1"))
+        pieces.append(Rook("White","H1"))
+        pieces.append(Rook("Black","A8"))
+        pieces.append(Knight("Black","B8"))
+        pieces.append(Bishop("Black","C8"))
+        pieces.append(Queen("Black","D8"))
+        pieces.append(King("Black","E8"))
+        pieces.append(Bishop("Black","F8"))
+        pieces.append(Knight("Black","G8"))
+        pieces.append(Rook("Black","H8"))
+
         #Keeps track if white or black has castled
         self.whiteCastle = False
         self.blackCastle = False
 
-    def getPieceList(self):
-        pieces = []
-        for key in self.board.keys():
-            if self.board[key].piece != None:
-                pieces.append(self.board[key].piece)
-        return pieces
+    def getAllPieces(self):
+        return self.pieces
 
-    def toString(self):
-        result = ""
-        for square in self.board.values():
-            result += " " + square.toString()
-        return result
+    def getBlackPieces(self):
+        bpieces = []
+        for piece in self.pieces:
+            if piece.color == "Black":
+                bpieces.append(piece)
+        return bpieces
+
+    def getWhitePieces(self):
+        wpieces = []
+        for piece in self.pieces:
+            if piece.color == "White":
+                wpieces.append(piece)
+        return wpieces
 
     #Logic for determining if a board has a given piece on a given square
     #Piece: Piece name
     #Square: Square name. Must be a valid square name in string form "[Letter][Number]" eg "E4"
-    def hasPiece(self,piece,color,square):
-        s1 = self.board[square]
-        if(s1.piece!=None):
-            if(s1.piece.name == piece and s1.piece.color == color):
+    def hasGivenPiece(self,name,color,square):
+        for piece in self.pieces:
+            if piece.name == name and piece.color == color and piece.square == square:
+                return True
+        return False
+    #Used to determine if a given square has a piece on it
+    def hasAnyPiece(self,square):
+        for piece in self.pieces:
+            if piece.square == square:
+                return True
+        return False
+    #Used to determine if a given square as a piece of given color on it
+    def hasColorPiece(self,color,square):
+        for piece in self.pieces:
+            if piece.square == square and piece.color == color:
                 return True
         return False
 
+    def kingLocation(self,color):
+        for piece in self.pieces:
+            if piece.name == "King" and piece.color == color:
+                return piece.square
+
     def cloneBoard(self):
         newBoard = Board()
-            #Remove all pieces
-        for sqr in newBoard.board.values():
-            sqr.removePiece()
-        for key in self.board.keys():
-            #Point new board squares to pieces
-            if self.board[key].piece != None:
-                newBoard.board[key].addPiece(self.board[key].piece)
+        #Erase the initialized pieces
+        newBoard.pieces = []
+        for piece in self.pieces:
+            #Copy over pieces
+            newBoard.pieces.append(piece)
+        #Copy over castle states
         newBoard.whiteCastle = self.whiteCastle
         newBoard.blackCastle = self.blackCastle
         return newBoard
-    #Does not alter THIS board. Creates a new board, and makes the move on that board. And returns that board.
+
+    #Logic for moving a single piece
     def makeMove(self,square1Name,square2Name):
         newBoard = self.cloneBoard()
         p = newBoard.board[square1Name].piece
@@ -85,13 +105,11 @@ class Board:
         newBoard.board[square2Name].addPiece(p)
         return newBoard
 
-b = Board()
-print(b.toString())
-c = b.makeMove("E2","E4")
-print(c.toString())
+    #Logic for castling
+    def makeCastle(self....params):
 
-
-
+    #Logic for capturing
+    def makeCapture(self,):
 
 
 
