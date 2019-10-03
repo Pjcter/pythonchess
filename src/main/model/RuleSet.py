@@ -67,7 +67,8 @@ class RuleSet:
         #Case 2: Moving Forward Twice
         if s1l == s2l and s1n == (s2n - (2 * move)):
             if not board.hasAnyPiece(s2) and not board.hasAnyPiece(chr(s1l)+str(s2n-move)):
-                return True
+                    if(color == "White" and s1[1] == "2" ) or (color == "Black" and s1[1] == "7"):
+                        return True
         #Case 3: Leftward Capturing
         if s1l == s2l-1 and s1n == (s2n - move):
             if color == "Black" and board.hasColorPiece("White",s2):
@@ -89,10 +90,11 @@ class RuleSet:
         s2l = ord(s2[0])
         s1n = int(s1[1])
         s2n = int(s2[1])
-        if abs(s1l-s2l) == 1 or abs(s1n-s2n)==1:
-            return True
-        if color == "White:" and not board.whiteCastle:
+        #Check if castle, and if you can castle.
 
+        #Normal Move
+        if (abs(s1l-s2l) + abs(s1n-s2n)) <= 1 and (abs(s1l-s2l) + abs(s1n-s2n)) > 0:
+            return True
         return False
 
     #Logic for legal Rook move
@@ -133,6 +135,7 @@ class RuleSet:
                     return False
                 i = i-1
             return True
+        return False
 
 
     #Logic for legal Queen move
@@ -197,9 +200,6 @@ class RuleSet:
         if abs(s1n-s2n)==1 and abs(s1l-s2l)==2:
             return True
         return False
-
-    #Logic for legal Castle move
-    def validateCastle(self,board,s1,s2,color):
 
     def isInCheck(self,board,color,kingSquare):
         enemyPieces = []
