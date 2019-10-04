@@ -9,7 +9,7 @@ class Piece:
         self.square = square
 
     def toString(self):
-        return self.color + " " + self.name
+        return self.color[0] + self.name[0]
 
     def isCapture(self, destination, board):
         if (board.hasAnyPiece(destination)):
@@ -18,7 +18,7 @@ class Piece:
             return False
 
     def move(self,destination,board):
-        if self.isCapture(self, destination, board):
+        if self.isCapture(destination, board):
             board.makeCapture(destination)
         self.square = destination
 
@@ -56,6 +56,10 @@ class Pawn(Piece):
             return True
         return False
 
+    def copy(self):
+        cpy = Pawn(self.color,self.square)
+        return cpy
+
 class Rook(Piece):
     def __init__(self,color,square):
         Piece.__init__(self,color,5,"Rook",square)
@@ -68,15 +72,26 @@ class Rook(Piece):
         else:
             board.blackCastle = True
 
+    def copy(self):
+        cpy = Rook(self.color, self.square)
+        return cpy
+
 class Bishop(Piece):
     def __init__(self,color,square):
         Piece.__init__(self,color,3,"Bishop",square)
 
+    def copy(self):
+        cpy = Bishop(self.color,self.square)
+        return cpy
 
 
 class Knight(Piece):
     def __init__(self,color,square):
         Piece.__init__(self,color,3.5,"Knight",square)
+
+    def copy(self):
+        cpy = Knight(self.color,self.square)
+        return cpy
 
 class King(Piece):
     def __init__(self,color,square):
@@ -101,8 +116,14 @@ class King(Piece):
             board.blackCastle = True
         self.square = destination
 
+    def copy(self):
+        cpy = King(self.color,self.square)
+        return cpy
+
 class Queen(Piece):
     def __init__(self,color,square):
         Piece.__init__(self,color,10,"Queen",square)
 
-
+    def copy(self):
+        cpy = Queen(self.color,self.square)
+        return cpy

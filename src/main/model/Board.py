@@ -89,7 +89,7 @@ class Board:
         newBoard = Board()
         newBoard.pieces = []
         for piece in self.pieces:
-            newBoard.pieces.append(piece)
+            newBoard.pieces.append(piece.copy())
         newBoard.whiteCastle = self.whiteCastle
         newBoard.blackCastle = self.blackCastle
         return newBoard
@@ -113,4 +113,17 @@ class Board:
                 return piece
         return None
 
-
+    def toString(self):
+        ltrs = "ABCDEFGH"
+        nums = "87654321"
+        brd = ""
+        for num in nums:
+            row = ""
+            for ltr in ltrs:
+                sqr = ltr+num
+                if self.hasAnyPiece(sqr):
+                    row += self.getPiece(sqr).toString() + " "
+                else:
+                    row += "[]" + " "
+            brd += row + '\n'
+        return brd

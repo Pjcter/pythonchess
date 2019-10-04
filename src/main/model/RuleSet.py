@@ -12,40 +12,34 @@ class RuleSet:
     #S1: The origin square of the move
     #S2: The destination square of the move
     def validateMove(self, piece, pcolor, turn, board, s1, s2):
-        #Check if its this pieces turn
         if pcolor != turn:
             return False
-        #Check if s2 is a legal square on the board
-        if self.validSquare(s1) and self.validSquare(s2):
-            pass
-        else:
+        if not(self.validSquare(s1) and self.validSquare(s2)):
+            print("Error, invalid square given to validateMove")
             return False
-        #Check if s2 contains a friendly piece on it
         if (pcolor == "White" and board.hasColorPiece("White", s2)) or (pcolor == "Black" and board.hasColorPiece("Black", s2)):
             return False
-        #Check if your king is now in check
-        # to do this, iterate through all enemy pieces and see if they can move to where your king is.
-
-        #Check if the piece can move there at all
         if board.hasGivenPiece(piece, pcolor, s1):
-            if piece==Pawn:
+            if piece=="Pawn":
                 if not self.validatePawn(board,s1,s2,pcolor):
                     return False
-            elif piece==King:
+            elif piece=="King":
                 if not self.validateKing(board,s1,s2,pcolor):
                     return False
-            elif piece==Queen:
+            elif piece=="Queen":
                 if not self.validateQueen(board,s1,s2):
                     return False
-            elif piece==Knight:
+            elif piece=="Knight":
                 if not self.validateKnight(board,s1,s2):
                     return False
-            elif piece==Bishop:
+            elif piece=="Bishop":
                 if not self.validateBishop(board,s1,s2):
                     return False
-            elif piece==Rook:
+            elif piece=="Rook":
                 if not self.validateRook(board,s1,s2):
                     return False
+            else:
+                print("Error: invalid move request")
         mockBoard = board.makeMove(s1,s2)
         #If king is not in check after move, this is a valid move!
         return not self.isInCheck(mockBoard,pcolor,mockBoard.kingLocation(pcolor))
@@ -91,7 +85,23 @@ class RuleSet:
         s1n = int(s1[1])
         s2n = int(s2[1])
         #Check if castle, and if you can castle.
-
+        if (color == "White" and board.whiteCastle == False ) or (color == "Black" and board.blackCastle == False):
+            if(color == "White" and s2 == "C1"):
+                if not (self.isInCheck(board,color,"C1") and self.isInCheck(board,color,"D1") and self.isInCheck(board,color,"E1")):
+                    if not( board.hasAnyPiece("B1") and board.hasAnyPiece("C1") and board.hasAnyPiece("D1")):
+                        return True
+            elif(color == "White" and s2 == "G1"):
+                if not (self.isInCheck(board,color,"E1") and self.isInCheck(board,color,"F1") and self.isInCheck(board,color,"G1")):
+                    if not( board.hasAnyPiece("F1") and board.hasAnyPiece("G1") ):
+                        return True
+            elif(color == "Black" and s2 == "C8"):
+                if not (self.isInCheck(board,color,"C8") and self.isInCheck(board,color,"D8") and self.isInCheck(board,color,"E8")):
+                    if not( board.hasAnyPiece("B8") and board.hasAnyPiece("C8") and board.hasAnyPiece("D8")):
+                        return True
+            elif(color == "Black" and s2 == "G8"):
+                if not (self.isInCheck(board,color,"E8") and self.isInCheck(board,color,"F8") and self.isInCheck(board,color,"G8")):
+                    if not( board.hasAnyPiece("F8") and board.hasAnyPiece("G8") ):
+                        return True
         #Normal Move
         if (abs(s1l-s2l) + abs(s1n-s2n)) <= 1 and (abs(s1l-s2l) + abs(s1n-s2n)) > 0:
             return True
@@ -123,7 +133,7 @@ class RuleSet:
         if s1n==s2n and s1l<s2l:
             i= s1l
             while i<s2l:
-                if board.hasAnyPiece(chr(i)+int(s1n)):
+                if board.hasAnyPiece(chr(i)+str(s1n)):
                     return False
                 i = i+1
             return True
@@ -131,7 +141,7 @@ class RuleSet:
         if s1n==s2n and s1l>s2l:
             i= s1l
             while i>s2l:
-                if board.hasAnyPiece(chr(i)+int(s1n)):
+                if board.hasAnyPiece(chr(i)+str(s1n)):
                     return False
                 i = i-1
             return True
@@ -153,7 +163,7 @@ class RuleSet:
             if s1l<s2l and s1n<s2n:
                 i= s1l, j = s1n
                 while i<s2l and j<s2n:
-                    if board.hasAnyPiece(chr(i)+int(j)):
+                    if board.hasAnyPiece(chr(i)+str(j)):
                         return False
                     i = i+1
                     j = j+1
@@ -162,7 +172,7 @@ class RuleSet:
             if s1l<s2l and s1n>s2n:
                 i= s1l, j = s1n
                 while i<s2l and j>s2n:
-                    if board.hasAnyPiece(chr(i)+int(j)):
+                    if board.hasAnyPiece(chr(i)+str(j)):
                         return False
                     i = i+1
                     j = j-1
@@ -171,7 +181,7 @@ class RuleSet:
             if s1l>s2l and s1n<s2n:
                 i= s1l, j = s1n
                 while i>s2l and j<s2n:
-                    if board.hasAnyPiece(chr(i)+int(j)):
+                    if board.hasAnyPiece(chr(i)+str(j)):
                         return False
                     i = i-1
                     j = j+1
@@ -180,7 +190,7 @@ class RuleSet:
             if s1l>s2l and s1n>s2n:
                 i= s1l, j = s1n
                 while i>s2l and j>s2n:
-                    if board.hasAnyPiece(chr(i)+int(j)):
+                    if board.hasAnyPiece(chr(i)+str(j)):
                         return False
                     i = i-1
                     j = j-1
@@ -226,14 +236,14 @@ class RuleSet:
                 if self.validateQueen(board,piece.square,kingSquare):
                     return True
             else:
-                if (abs( ord(piece.square[0]) - ord(kingSquare[0])) == 1) or (abs( int(piece.square[1] - int(kingSquare[1]))) == 1):
+                if abs(ord(piece.square[0]) - ord(kingSquare[0])) == 1 or abs( int(piece.square[1]) - int(kingSquare[1])) == 1:
                     return True
         return False
 
     def validSquare(self,square):
         ltr = square[0]
         num = square[1]
-        if ltr in "ABCDEFGH" and num in (1,2,3,4,5,6,7,8):
+        if ltr in "ABCDEFGH" and num in "12345678":
             return True
         return False
 
