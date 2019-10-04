@@ -41,6 +41,7 @@ class RuleSet:
             else:
                 print("Error: invalid move request")
         mockBoard = board.makeMove(s1,s2)
+        print("We made it to here")
         #If king is not in check after move, this is a valid move!
         return not self.isInCheck(mockBoard,pcolor,mockBoard.kingLocation(pcolor))
 
@@ -249,7 +250,7 @@ class RuleSet:
                 if self.validateQueen(board,piece.square,kingSquare):
                     return True
             else:
-                if abs(ord(piece.square[0]) - ord(kingSquare[0])) == 1 or abs( int(piece.square[1]) - int(kingSquare[1])) == 1:
+                if abs(ord(piece.square[0]) - ord(kingSquare[0])) == 1 and abs( int(piece.square[1]) - int(kingSquare[1])) == 1:
                     return True
         return False
 
