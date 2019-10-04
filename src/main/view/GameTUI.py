@@ -6,7 +6,7 @@ def __main__():
         print(game.turn + "'s Turn!")
         inpt = input("Enter move as: \"[Piece] [From] [To]\": ")
         info = inpt.split(" ")
-        if info == "Q" or info.__len__() < 3:
+        if info == "Q" or info.__len__() != 3:
             break
         piece = info[0]
         s1 = info[1]

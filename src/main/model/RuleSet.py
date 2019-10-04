@@ -87,23 +87,23 @@ class RuleSet:
         #Check if castle, and if you can castle.
         if (color == "White" and board.whiteCastle == False ) or (color == "Black" and board.blackCastle == False):
             if(color == "White" and s2 == "C1"):
-                if not (self.isInCheck(board,color,"C1") and self.isInCheck(board,color,"D1") and self.isInCheck(board,color,"E1")):
+                if not (self.isInCheck(board,color,"C1") or self.isInCheck(board,color,"D1") or self.isInCheck(board,color,"E1")):
                     if not( board.hasAnyPiece("B1") and board.hasAnyPiece("C1") and board.hasAnyPiece("D1")):
                         return True
             elif(color == "White" and s2 == "G1"):
-                if not (self.isInCheck(board,color,"E1") and self.isInCheck(board,color,"F1") and self.isInCheck(board,color,"G1")):
+                if not (self.isInCheck(board,color,"E1") or self.isInCheck(board,color,"F1") or self.isInCheck(board,color,"G1")):
                     if not( board.hasAnyPiece("F1") and board.hasAnyPiece("G1") ):
                         return True
             elif(color == "Black" and s2 == "C8"):
-                if not (self.isInCheck(board,color,"C8") and self.isInCheck(board,color,"D8") and self.isInCheck(board,color,"E8")):
+                if not (self.isInCheck(board,color,"C8") or self.isInCheck(board,color,"D8") or self.isInCheck(board,color,"E8")):
                     if not( board.hasAnyPiece("B8") and board.hasAnyPiece("C8") and board.hasAnyPiece("D8")):
                         return True
             elif(color == "Black" and s2 == "G8"):
-                if not (self.isInCheck(board,color,"E8") and self.isInCheck(board,color,"F8") and self.isInCheck(board,color,"G8")):
+                if not (self.isInCheck(board,color,"E8") or self.isInCheck(board,color,"F8") or self.isInCheck(board,color,"G8")):
                     if not( board.hasAnyPiece("F8") and board.hasAnyPiece("G8") ):
                         return True
         #Normal Move
-        if (abs(s1l-s2l) + abs(s1n-s2n)) <= 1 and (abs(s1l-s2l) + abs(s1n-s2n)) > 0:
+        if abs(s1l-s2l) <= 1 and abs(s1n-s2n) <= 1:
             return True
         return False
 
@@ -118,33 +118,37 @@ class RuleSet:
             i=s1n
             while i<s2n:
                 i = i+1
+                if i == s2n:
+                    return True
                 if board.hasAnyPiece(chr(s1l)+str(i)):
                     return False
-            return True
         #Case 2: Downwards Movement
         if s1l==s2l and s1n>s2n:
             i=s1n
             while i>s2n:
                 i = i-1
+                if i == s2n:
+                    return True
                 if board.hasAnyPiece(chr(s1l)+str(i)):
                     return False
-            return True
         #Case 3: Rightwards Movement
         if s1n==s2n and s1l<s2l:
             i= s1l
             while i<s2l:
                 i = i+1
+                if i == s2l:
+                    return True
                 if board.hasAnyPiece(chr(i)+str(s1n)):
                     return False
-            return True
         #Case 4: Leftward Movement
         if s1n==s2n and s1l>s2l:
             i= s1l
             while i>s2l:
                 i = i-1
+                if i == s2l:
+                    return True
                 if board.hasAnyPiece(chr(i)+str(s1n)):
                     return False
-            return True
         return False
 
 
@@ -166,9 +170,10 @@ class RuleSet:
                 while i<s2l and j<s2n:
                     i = i+1
                     j = j+1
+                    if i== s2l and j==s2n:
+                        return True
                     if board.hasAnyPiece(chr(i)+str(j)):
                         return False
-                return True
             #Case 2: Downright movement
             if s1l<s2l and s1n>s2n:
                 i= s1l
@@ -176,10 +181,11 @@ class RuleSet:
                 while i<s2l and j>s2n:
                     i = i+1
                     j = j-1
+                    if i== s2l and j==s2n:
+                        return True
                     if board.hasAnyPiece(chr(i)+str(j)):
                         print("Piece in the way")
                         return False
-                return True
             #Case 3: Upleft movement
             if s1l>s2l and s1n<s2n:
                 i= s1l
@@ -187,9 +193,10 @@ class RuleSet:
                 while i>s2l and j<s2n:
                     i = i-1
                     j = j+1
+                    if i== s2l and j==s2n:
+                        return True
                     if board.hasAnyPiece(chr(i)+str(j)):
                         return False
-                return True
             #Case 4: Downleft movement
             if s1l>s2l and s1n>s2n:
                 i= s1l
@@ -197,9 +204,10 @@ class RuleSet:
                 while i>s2l and j>s2n:
                     i = i-1
                     j = j-1
+                    if i== s2l and j==s2n:
+                        return True
                     if board.hasAnyPiece(chr(i)+str(j)):
                         return False
-                return True
         return False
 
     #Logic for legal Knight move

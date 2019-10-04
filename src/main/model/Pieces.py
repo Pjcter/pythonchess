@@ -126,13 +126,13 @@ class King(Piece):
         #Check if castle, if so, move the rook too.
         if (self.color == "White" and board.whiteCastle == False ) or (self.color == "Black" and board.blackCastle == False):
             if(self.color == "White" and destination == "C1"):
-                board.makeMove("A1","D1")
+                board.getPiece("A1").move("D1",board)
             elif(self.color == "White" and destination == "G1"):
-                board.makeMove("H1","F1")
+                board.getPiece("H1").move("F1",board)
             elif(self.color == "Black" and destination == "C8"):
-                board.makeMove("A8","D8")
+                board.getPiece("A8").move("D8",board)
             elif(self.color == "Black" and destination == "G8"):
-                board.makeMove("H8,F8")
+                board.getPiece("H8").move("F8",board)
         if self.color == "White":
             board.whiteCastle = True
         else:
