@@ -8,7 +8,7 @@ class Board:
     def __init__(self):
         self.squares = []
         # Populate with squares
-        for num in range(1,9):
+        for num in "12345678":
             for letter in "ABCDEFGH":
                 self.squares.append(Square(letter,num))
         self.pieces = []
@@ -118,12 +118,13 @@ class Board:
         nums = "87654321"
         brd = ""
         for num in nums:
-            row = ""
+            row = num + " "
             for ltr in ltrs:
                 sqr = ltr+num
                 if self.hasAnyPiece(sqr):
-                    row += self.getPiece(sqr).toString() + " "
+                    row += self.getPiece(sqr).toString() + "  "
                 else:
-                    row += "[]" + " "
+                    row += "    "
             brd += row + '\n'
+        brd += "  A   B   C   D   E   F   G   H"
         return brd

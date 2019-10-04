@@ -117,33 +117,33 @@ class RuleSet:
         if s1l==s2l and s1n<s2n:
             i=s1n
             while i<s2n:
+                i = i+1
                 if board.hasAnyPiece(chr(s1l)+str(i)):
                     return False
-                i = i+1
             return True
         #Case 2: Downwards Movement
         if s1l==s2l and s1n>s2n:
             i=s1n
             while i>s2n:
+                i = i-1
                 if board.hasAnyPiece(chr(s1l)+str(i)):
                     return False
-                i = i-1
             return True
         #Case 3: Rightwards Movement
         if s1n==s2n and s1l<s2l:
             i= s1l
             while i<s2l:
+                i = i+1
                 if board.hasAnyPiece(chr(i)+str(s1n)):
                     return False
-                i = i+1
             return True
         #Case 4: Leftward Movement
         if s1n==s2n and s1l>s2l:
             i= s1l
             while i>s2l:
+                i = i-1
                 if board.hasAnyPiece(chr(i)+str(s1n)):
                     return False
-                i = i-1
             return True
         return False
 
@@ -158,42 +158,47 @@ class RuleSet:
         s2l = ord(s2[0])
         s1n = int(s1[1])
         s2n = int(s2[1])
-        if (s1l-s2l) == (s1n-s2n):
+        if abs((s1l-s2l)) == abs((s1n-s2n)):
             #Case 1: Upright movement
             if s1l<s2l and s1n<s2n:
-                i= s1l, j = s1n
+                i= s1l
+                j = s1n
                 while i<s2l and j<s2n:
-                    if board.hasAnyPiece(chr(i)+str(j)):
-                        return False
                     i = i+1
                     j = j+1
+                    if board.hasAnyPiece(chr(i)+str(j)):
+                        return False
                 return True
             #Case 2: Downright movement
             if s1l<s2l and s1n>s2n:
-                i= s1l, j = s1n
+                i= s1l
+                j = s1n
                 while i<s2l and j>s2n:
-                    if board.hasAnyPiece(chr(i)+str(j)):
-                        return False
                     i = i+1
                     j = j-1
+                    if board.hasAnyPiece(chr(i)+str(j)):
+                        print("Piece in the way")
+                        return False
                 return True
             #Case 3: Upleft movement
             if s1l>s2l and s1n<s2n:
-                i= s1l, j = s1n
+                i= s1l
+                j = s1n
                 while i>s2l and j<s2n:
-                    if board.hasAnyPiece(chr(i)+str(j)):
-                        return False
                     i = i-1
                     j = j+1
+                    if board.hasAnyPiece(chr(i)+str(j)):
+                        return False
                 return True
             #Case 4: Downleft movement
             if s1l>s2l and s1n>s2n:
-                i= s1l, j = s1n
+                i= s1l
+                j = s1n
                 while i>s2l and j>s2n:
-                    if board.hasAnyPiece(chr(i)+str(j)):
-                        return False
                     i = i-1
                     j = j-1
+                    if board.hasAnyPiece(chr(i)+str(j)):
+                        return False
                 return True
         return False
 

@@ -3,14 +3,23 @@ class Square:
 
     #Constructor method
     def __init__(self,letter,num):
-        self.piece = None
         self.num = num #The number of a square
         self.letter = letter #The letter of a square
+        if letter in "ACEG":
+            if num in "1357":
+                self.color = "Black"
+            else:
+                self.color = "White"
+        else:
+            if num in "1357":
+                self.color = "White"
+            else:
+                self.color = "Black"
 
     #toString method
     def toString(self):
         if self.piece != None:
-            return self.letter + str(self.num) + ": " + self.piece.toString()
-        return self.letter + str(self.num)
+            return self.letter + self.num
+        return self.letter + self.num
 
 # End class declaration

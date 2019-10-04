@@ -10,7 +10,6 @@ class Piece:
 
     def toString(self):
         return self.color[0] + self.name[0]
-
     def isCapture(self, destination, board):
         if (board.hasAnyPiece(destination)):
             return True
@@ -60,6 +59,12 @@ class Pawn(Piece):
         cpy = Pawn(self.color,self.square)
         return cpy
 
+    def toString(self):
+        if self.color == "White":
+            return "♙"
+        else:
+            return "♟"
+
 class Rook(Piece):
     def __init__(self,color,square):
         Piece.__init__(self,color,5,"Rook",square)
@@ -67,6 +72,7 @@ class Rook(Piece):
     def move(self,destination,board):
         if self.isCapture(destination,board):
             board.makeCapture(destination)
+        self.square = destination
         if self.color == "White":
             board.whiteCastle = True
         else:
@@ -76,6 +82,12 @@ class Rook(Piece):
         cpy = Rook(self.color, self.square)
         return cpy
 
+    def toString(self):
+        if self.color == "White":
+            return "♖"
+        else:
+            return "♜"
+
 class Bishop(Piece):
     def __init__(self,color,square):
         Piece.__init__(self,color,3,"Bishop",square)
@@ -84,6 +96,11 @@ class Bishop(Piece):
         cpy = Bishop(self.color,self.square)
         return cpy
 
+    def toString(self):
+        if self.color == "White":
+            return "♗"
+        else:
+            return "♝"
 
 class Knight(Piece):
     def __init__(self,color,square):
@@ -92,6 +109,12 @@ class Knight(Piece):
     def copy(self):
         cpy = Knight(self.color,self.square)
         return cpy
+
+    def toString(self):
+        if self.color == "White":
+            return "♘"
+        else:
+            return "♞"
 
 class King(Piece):
     def __init__(self,color,square):
@@ -120,6 +143,12 @@ class King(Piece):
         cpy = King(self.color,self.square)
         return cpy
 
+    def toString(self):
+        if self.color == "White":
+            return "♔"
+        else:
+            return "♚"
+
 class Queen(Piece):
     def __init__(self,color,square):
         Piece.__init__(self,color,10,"Queen",square)
@@ -127,3 +156,9 @@ class Queen(Piece):
     def copy(self):
         cpy = Queen(self.color,self.square)
         return cpy
+
+    def toString(self):
+        if self.color == "White":
+            return "♕"
+        else:
+            return "♛"
