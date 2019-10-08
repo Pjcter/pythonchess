@@ -5,7 +5,7 @@ class Square:
     def __init__(self,letter,num):
         self.num = num #The number of a square
         self.letter = letter #The letter of a square
-        if letter in "ACEG":
+        if letter in "aceg":
             if num in "1357":
                 self.color = "Black"
             else:

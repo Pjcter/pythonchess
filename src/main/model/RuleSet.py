@@ -41,7 +41,6 @@ class RuleSet:
             else:
                 print("Error: invalid move request")
         mockBoard = board.makeMove(s1,s2)
-        print("We made it to here")
         #If king is not in check after move, this is a valid move!
         return not self.isInCheck(mockBoard,pcolor,mockBoard.kingLocation(pcolor))
 
@@ -87,21 +86,21 @@ class RuleSet:
         s2n = int(s2[1])
         #Check if castle, and if you can castle.
         if (color == "White" and board.whiteCastle == False ) or (color == "Black" and board.blackCastle == False):
-            if(color == "White" and s2 == "C1"):
-                if not (self.isInCheck(board,color,"C1") or self.isInCheck(board,color,"D1") or self.isInCheck(board,color,"E1")):
-                    if not( board.hasAnyPiece("B1") and board.hasAnyPiece("C1") and board.hasAnyPiece("D1")):
+            if(color == "White" and s2 == "c1"):
+                if not (self.isInCheck(board,color,"c1") or self.isInCheck(board,color,"d1") or self.isInCheck(board,color,"e1")):
+                    if not( board.hasAnyPiece("b1") and board.hasAnyPiece("c1") and board.hasAnyPiece("d1")):
                         return True
-            elif(color == "White" and s2 == "G1"):
-                if not (self.isInCheck(board,color,"E1") or self.isInCheck(board,color,"F1") or self.isInCheck(board,color,"G1")):
-                    if not( board.hasAnyPiece("F1") and board.hasAnyPiece("G1") ):
+            elif(color == "White" and s2 == "g1"):
+                if not (self.isInCheck(board,color,"e1") or self.isInCheck(board,color,"f1") or self.isInCheck(board,color,"g1")):
+                    if not( board.hasAnyPiece("f1") and board.hasAnyPiece("g1") ):
                         return True
-            elif(color == "Black" and s2 == "C8"):
-                if not (self.isInCheck(board,color,"C8") or self.isInCheck(board,color,"D8") or self.isInCheck(board,color,"E8")):
-                    if not( board.hasAnyPiece("B8") and board.hasAnyPiece("C8") and board.hasAnyPiece("D8")):
+            elif(color == "Black" and s2 == "c8"):
+                if not (self.isInCheck(board,color,"c8") or self.isInCheck(board,color,"d8") or self.isInCheck(board,color,"e8")):
+                    if not( board.hasAnyPiece("b8") and board.hasAnyPiece("c8") and board.hasAnyPiece("d8")):
                         return True
-            elif(color == "Black" and s2 == "G8"):
-                if not (self.isInCheck(board,color,"E8") or self.isInCheck(board,color,"F8") or self.isInCheck(board,color,"G8")):
-                    if not( board.hasAnyPiece("F8") and board.hasAnyPiece("G8") ):
+            elif(color == "Black" and s2 == "g8"):
+                if not (self.isInCheck(board,color,"e8") or self.isInCheck(board,color,"f8") or self.isInCheck(board,color,"g8")):
+                    if not( board.hasAnyPiece("f8") and board.hasAnyPiece("g8") ):
                         return True
         #Normal Move
         if abs(s1l-s2l) <= 1 and abs(s1n-s2n) <= 1:
@@ -185,7 +184,6 @@ class RuleSet:
                     if i== s2l and j==s2n:
                         return True
                     if board.hasAnyPiece(chr(i)+str(j)):
-                        print("Piece in the way")
                         return False
             #Case 3: Upleft movement
             if s1l>s2l and s1n<s2n:
@@ -257,7 +255,38 @@ class RuleSet:
     def validSquare(self,square):
         ltr = square[0]
         num = square[1]
-        if ltr in "ABCDEFGH" and num in "12345678":
+        if ltr in "abcdefgh" and num in "12345678":
             return True
         return False
+
+    def findLegalMoves(self,board,location):
+        moves = []
+        if not board.hasAnyPiece(location):
+            return moves
+        else:
+            p = board.getPiece(location)
+        for letter in "abcdefgh":
+            for num in "12345678":
+                sqr = letter + num
+                if self.validateMove(p.name,p.color,p.color,board,location,sqr):
+                    moves.append(sqr)
+        return moves
+
+    def findAllLegalMoves(self,board,color):
+        moves = []
+        if color == "White":
+            pieces = board.getWhitePieces()
+        else:
+            pieces = board.getBlackPieces()
+        for piece in pieces:
+            pieceMoves = self.findLegalMoves(board,piece.square)
+            for move in pieceMoves:
+                if piece.name == "Knight":
+                    moves.append("N" + move)
+                elif piece.name == "Pawn":
+                    moves.append(move)
+                else:
+                    moves.append(piece.name[0] + move)
+        return moves
+
 

@@ -4,6 +4,9 @@ def __main__():
     while True:
         print(game.board.toString())
         print(game.turn + "'s Turn!")
+        #print(game.ruleSet.findAllLegalMoves(game.board,game.turn))
+        if(game.isChecked(game.turn)):
+            print("CHECK!")
         inpt = input("Enter move as: \"[Piece] [From] [To]\": ")
         info = inpt.split(" ")
         if info == "Q" or info.__len__() != 3:

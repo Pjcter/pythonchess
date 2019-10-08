@@ -9,30 +9,30 @@ class Board:
         self.squares = []
         # Populate with squares
         for num in "12345678":
-            for letter in "ABCDEFGH":
+            for letter in "abcdefgh":
                 self.squares.append(Square(letter,num))
         self.pieces = []
         # Now populate with pieces
-        for ltr in "ABCDEFGH":
+        for ltr in "abcdefgh":
             self.pieces.append((Pawn("White",ltr+"2")))
             self.pieces.append((Pawn("Black",ltr+"7")))
         #Hardcoding other pieces
-        self.pieces.append(Rook("White", "A1"))
-        self.pieces.append(Knight("White", "B1"))
-        self.pieces.append(Bishop("White", "C1"))
-        self.pieces.append(Queen("White", "D1"))
-        self.pieces.append(King("White", "E1"))
-        self.pieces.append(Bishop("White","F1"))
-        self.pieces.append(Knight("White","G1"))
-        self.pieces.append(Rook("White","H1"))
-        self.pieces.append(Rook("Black","A8"))
-        self.pieces.append(Knight("Black","B8"))
-        self.pieces.append(Bishop("Black","C8"))
-        self.pieces.append(Queen("Black","D8"))
-        self.pieces.append(King("Black","E8"))
-        self.pieces.append(Bishop("Black","F8"))
-        self.pieces.append(Knight("Black","G8"))
-        self.pieces.append(Rook("Black","H8"))
+        self.pieces.append(Rook("White", "a1"))
+        self.pieces.append(Knight("White", "b1"))
+        self.pieces.append(Bishop("White", "c1"))
+        self.pieces.append(Queen("White", "d1"))
+        self.pieces.append(King("White", "e1"))
+        self.pieces.append(Bishop("White","f1"))
+        self.pieces.append(Knight("White","g1"))
+        self.pieces.append(Rook("White","h1"))
+        self.pieces.append(Rook("Black","a8"))
+        self.pieces.append(Knight("Black","b8"))
+        self.pieces.append(Bishop("Black","c8"))
+        self.pieces.append(Queen("Black","d8"))
+        self.pieces.append(King("Black","e8"))
+        self.pieces.append(Bishop("Black","f8"))
+        self.pieces.append(Knight("Black","g8"))
+        self.pieces.append(Rook("Black","h8"))
         #Keeps track if white or black has castled
         self.whiteCastle = False
         self.blackCastle = False
@@ -114,7 +114,7 @@ class Board:
         return None
 
     def toString(self):
-        ltrs = "ABCDEFGH"
+        ltrs = "abcdefgh"
         nums = "87654321"
         brd = ""
         for num in nums:
@@ -126,5 +126,5 @@ class Board:
                 else:
                     row += "    "
             brd += row + '\n'
-        brd += "  A   B   C   D   E   F   G   H"
+        brd += "  a   b   c   d   e   f   g   i"
         return brd
