@@ -2,6 +2,7 @@ import tkinter as tk
 
 from src.main.model.Game import Game
 
+LARGE_FONT = ("Calibri", 12)
 
 class ChessApplication(tk.Tk):
 
@@ -17,11 +18,13 @@ class ChessApplication(tk.Tk):
 
         self.frames = {}
 
-        frame = ChessGUI(container, self)
+        for F in (ChessGUI, OpeningScreen):
+            frame = F(container, self)
+            self.frames[F] = frame
+            frame.grid(row=0, column=0, sticky="nsew")
 
-        self.frames[ChessGUI] = frame
 
-        frame.grid(row=0,column=0,sticky="nsew")
+
 
         self.show_frame(ChessGUI)
 
@@ -29,6 +32,7 @@ class ChessApplication(tk.Tk):
 
         frame = self.frames[cont]
         frame.tkraise()
+
 
 class ChessGUI(tk.Frame):
 
@@ -42,7 +46,7 @@ class ChessGUI(tk.Frame):
             else:
                 img = tk.PhotoImage(file = "white_square.png")
             label = tk.Label(self,image=img)
-            label.place(row = 9 - int(sqr.num) , column =ord(sqr.letter) - 64)
+            label.place(y = 9 - int(sqr.num) , x =ord(sqr.letter) - 64)
             self.imgs.append(img)
         self.play()
 
@@ -79,6 +83,16 @@ class ChessGUI(tk.Frame):
             label = tk.Label(self,image = img)
             label.place(y =  (8 - int(piece.square[1]))*100, x = 100*(ord(piece.square[0]) - 97))
             self.imgs.append(img)
+
+class OpeningScreen(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        startBtn = tk.Button(self, text="New Game", font=LARGE_FONT)
+        startBtn.pack()
+        loadBtn = tk.Button(self, text="Load Game")
+        loadBtn.pack()
+
 
 app = ChessApplication()
 app.mainloop()
