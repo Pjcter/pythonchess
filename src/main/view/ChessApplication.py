@@ -57,31 +57,32 @@ class ChessGUI(tk.Frame):
         for piece in self.game.board.pieces:
             if piece.name == "Pawn" and piece.color == "White":
                 img = tk.PhotoImage(file = "whtPawn.png")
-            if piece.name == "Pawn" and piece.color == "Black":
+            elif piece.name == "Pawn" and piece.color == "Black":
                 img = tk.PhotoImage(file = "blkPawn.png")
-            if piece.name == "Knight" and piece.color == "White":
+            elif piece.name == "Knight" and piece.color == "White":
                 img = tk.PhotoImage(file = "whtKnight.png")
-            if piece.name == "Knight" and piece.color == "Black":
+            elif piece.name == "Knight" and piece.color == "Black":
                 img = tk.PhotoImage(file = "blkKnight.png")
-            if piece.name == "Bishop" and piece.color == "White":
+            elif piece.name == "Bishop" and piece.color == "White":
                 img = tk.PhotoImage(file = "whtBishop.png")
-            if piece.name == "Bishop" and piece.color == "Black":
+            elif piece.name == "Bishop" and piece.color == "Black":
                 img = tk.PhotoImage(file = "blkBishop.png")
-            if piece.name == "Rook" and piece.color == "White":
+            elif piece.name == "Rook" and piece.color == "White":
                 img = tk.PhotoImage(file = "whtRook.png")
-            if piece.name == "Rook" and piece.color == "Black":
+            elif piece.name == "Rook" and piece.color == "Black":
                 img = tk.PhotoImage(file = "blkRook.png")
-            if piece.name == "King" and piece.color == "White":
+            elif piece.name == "King" and piece.color == "White":
                 img = tk.PhotoImage(file = "whtKing.png")
-            if piece.name == "King" and piece.color == "Black":
+            elif piece.name == "King" and piece.color == "Black":
                 img = tk.PhotoImage(file = "blkKing.png")
-            if piece.name == "Queen" and piece.color == "White":
+            elif piece.name == "Queen" and piece.color == "White":
                 img = tk.PhotoImage(file = "whtQueen.png")
-            if piece.name == "Queen" and piece.color == "Black":
+            elif piece.name == "Queen" and piece.color == "Black":
                 img = tk.PhotoImage(file="blkQueen.png")
 
-            label = tk.Label(self,image = img)
-            label.place(y =  (8 - int(piece.square[1]))*100, x = 100*(ord(piece.square[0]) - 97))
+            canv = tk.Canvas(tk, width=100, height=100)
+            canv.create_image(50, 50, img)
+            canv.place(y = (8 - int(piece.square[1]))*100, x = 100*(ord(piece.square[0]) - 97))
             self.imgs.append(img)
 
 class OpeningScreen(tk.Frame):
