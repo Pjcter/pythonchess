@@ -1,1 +1,0 @@
-This is the Folder where we can add our GUI resources

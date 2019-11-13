@@ -1,99 +1,107 @@
 import tkinter as tk
+from PIL import ImageTk
 
 from src.main.model.Game import Game
 
-LARGE_FONT = ("Calibri", 12)
+# Constant Declarations
+
+SCALE_MULTIPLIER = 1;
+SQUARESIZE = 50*SCALE_MULTIPLIER;
 
 class ChessApplication(tk.Tk):
-
     def __init__(self, *args, **kwargs):
-
         tk.Tk.__init__(self,*args,**kwargs)
-        container = tk.Frame(self)
 
-        container.pack(side="top", fill = "both", expand = True)
+        #Create Main Window
+        window = tk.Frame(self)
+        window.pack(side="top", fill = "both", expand = True)
+        window.rowconfigure(0,weight=1)
+        window.columnconfigure(0,weight=1)
+        self.minsize(8*SQUARESIZE,8*SQUARESIZE)
+        self.maxsize(8*SQUARESIZE,8*SQUARESIZE)
+        self.wm_title("Chess")
+        self.iconphoto(self,ImageTk.PhotoImage(file=".\img\\blkKing.png"))
+        self.center()
 
-        container.rowconfigure(0,weight=1)
-        container.columnconfigure(0,weight=1)
+        #Initialize Scenes
+        self.scenes = {}
+        self.scenes[ChessGUI] = ChessGUI(window, self)
+        self.show_scene(ChessGUI)
 
-        self.frames = {}
+    def center(win):
+        win.update_idletasks()
+        width = win.winfo_width()
+        height = win.winfo_height()
+        x = (win.winfo_screenwidth() // 2) - (width // 2)
+        y = (win.winfo_screenheight() // 2) - (height // 2)
+        win.geometry('{}x{}+{}+{}'.format(width, height, x, y-100))
 
-        for F in (ChessGUI, OpeningScreen):
-            frame = F(container, self)
-            self.frames[F] = frame
-            frame.grid(row=0, column=0, sticky="nsew")
-
-
-
-
-        self.show_frame(ChessGUI)
-
-    def show_frame(self,cont):
-
-        frame = self.frames[cont]
-        frame.tkraise()
+    def show_scene(self,cont):
+        scene = self.scenes[cont]
+        #TODO: redraw scene on top
 
 
-class ChessGUI(tk.Frame):
-
+#This is a Canvas scene that represents a game of chess.
+class ChessGUI(tk.Canvas):
     def __init__(self,parent,controller):
-        tk.Frame.__init__(self,parent)
+        tk.Canvas.__init__(self,parent)
+        self.grid(row=0,column=0,sticky="nsew")
         self.imgs = []
         self.game = Game()
-        for sqr in self.game.board.squares:
-            if sqr.color == "Black":
-                img = tk.PhotoImage(file = "black_square.png")
-            else:
-                img = tk.PhotoImage(file = "white_square.png")
-            label = tk.Label(self,image=img)
-            label.place(y = 9 - int(sqr.num) , x =ord(sqr.letter) - 64)
-            self.imgs.append(img)
-        self.play()
+        self.lastClicked = None
+        self.lastHighlight = None
+        self.bind("<Button-1>",self.handle_click)
+        self.redraw()
 
-    def play(self):
-            self.redraw()
+    def handle_click(self,event):
+        x_coord = int(event.x / SQUARESIZE)
+        y_coord = int(event.y / SQUARESIZE)
+        #Translate coords to squares
+        letter = chr(x_coord+97)
+        num = str(8-y_coord)
+        square = letter+num
+        if self.lastClicked == None:
+            if self.game.board.hasColorPiece(self.game.turn,square):
+                self.lastClicked = square
+                img = ImageTk.PhotoImage(file=".\img\highlight.png")
+                self.create_image(SQUARESIZE*x_coord,SQUARESIZE*y_coord,image=img,anchor=tk.NW)
+                self.lastHighlight = img
+        elif self.lastClicked != None:
+            if self.game.board.hasColorPiece(self.game.turn,self.lastClicked):
+                pieceName = self.game.board.getPiece(self.lastClicked).name
+                if self.game.ruleSet.validateMove(pieceName,self.game.turn,self.game.turn,self.game.board,self.lastClicked,square):
+                    self.game.board = self.game.board.makeMove(self.lastClicked,square)
+                    self.lastHighlight = None
+                    self.redraw()
+                    self.game.changeTurn()
+                self.lastClicked = None
+            if self.game.board.hasAnyPiece(square):
+                self.lastClicked = square
+                img = ImageTk.PhotoImage(file=".\img\highlight.png")
+                self.create_image(SQUARESIZE * x_coord, SQUARESIZE * y_coord, image=img, anchor=tk.NW)
+                self.lastHighlight = img
 
     def redraw(self):
-        for piece in self.game.board.pieces:
-            if piece.name == "Pawn" and piece.color == "White":
-                img = tk.PhotoImage(file = "whtPawn.png")
-            elif piece.name == "Pawn" and piece.color == "Black":
-                img = tk.PhotoImage(file = "blkPawn.png")
-            elif piece.name == "Knight" and piece.color == "White":
-                img = tk.PhotoImage(file = "whtKnight.png")
-            elif piece.name == "Knight" and piece.color == "Black":
-                img = tk.PhotoImage(file = "blkKnight.png")
-            elif piece.name == "Bishop" and piece.color == "White":
-                img = tk.PhotoImage(file = "whtBishop.png")
-            elif piece.name == "Bishop" and piece.color == "Black":
-                img = tk.PhotoImage(file = "blkBishop.png")
-            elif piece.name == "Rook" and piece.color == "White":
-                img = tk.PhotoImage(file = "whtRook.png")
-            elif piece.name == "Rook" and piece.color == "Black":
-                img = tk.PhotoImage(file = "blkRook.png")
-            elif piece.name == "King" and piece.color == "White":
-                img = tk.PhotoImage(file = "whtKing.png")
-            elif piece.name == "King" and piece.color == "Black":
-                img = tk.PhotoImage(file = "blkKing.png")
-            elif piece.name == "Queen" and piece.color == "White":
-                img = tk.PhotoImage(file = "whtQueen.png")
-            elif piece.name == "Queen" and piece.color == "Black":
-                img = tk.PhotoImage(file="blkQueen.png")
-
-            canv = tk.Canvas(tk, width=100, height=100)
-            canv.create_image(50, 50, img)
-            canv.place(y = (8 - int(piece.square[1]))*100, x = 100*(ord(piece.square[0]) - 97))
+        #Delete Old Images
+        self.imgs.clear()
+        #Redraw Squares
+        for sqr in self.game.board.squares:
+            if sqr.color == "Black":
+                img = ImageTk.PhotoImage(file = ".\img\\black_square.png")
+            else:
+                img = ImageTk.PhotoImage(file = ".\img\\white_square.png")
+            self.create_image(SQUARESIZE*sqr.x_coord, SQUARESIZE*sqr.y_coord,image=img,anchor=tk.NW)
             self.imgs.append(img)
-
-class OpeningScreen(tk.Frame):
-
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        startBtn = tk.Button(self, text="New Game", font=LARGE_FONT)
-        startBtn.pack()
-        loadBtn = tk.Button(self, text="Load Game")
-        loadBtn.pack()
-
+        #Redraw Pieces
+        for piece in self.game.board.pieces:
+            if piece.color == "White":
+                img = ImageTk.PhotoImage(file =(".\img\\wht"+piece.name+".png"))
+            else:
+                img = ImageTk.PhotoImage(file =(".\img\\blk"+piece.name+".png"))
+            x_coord = ord(piece.square[0]) - 97
+            y_coord = 8 - int(piece.square[1])
+            self.create_image(SQUARESIZE*x_coord, SQUARESIZE*y_coord,image=img,anchor=tk.NW)
+            self.imgs.append(img)
 
 app = ChessApplication()
 app.mainloop()
