@@ -1,12 +1,13 @@
 import tkinter as tk
-from PIL import ImageTk
-
+from PIL import Image,ImageTk
+from winsound import *
+import winsound
 from src.main.model.Game import Game
 
 # Constant Declarations
-
-SCALE_MULTIPLIER = 1;
-SQUARESIZE = 50*SCALE_MULTIPLIER;
+SCALE_MULTIPLIER = 1.5;
+DEFAULT_SIZE = 50
+SQUARESIZE = int(DEFAULT_SIZE*SCALE_MULTIPLIER);
 
 class ChessApplication(tk.Tk):
     def __init__(self, *args, **kwargs):
@@ -17,10 +18,10 @@ class ChessApplication(tk.Tk):
         window.pack(side="top", fill = "both", expand = True)
         window.rowconfigure(0,weight=1)
         window.columnconfigure(0,weight=1)
-        self.minsize(8*SQUARESIZE,8*SQUARESIZE)
-        self.maxsize(8*SQUARESIZE,8*SQUARESIZE)
+        self.minsize(8*SQUARESIZE,8*SQUARESIZE + SQUARESIZE//2)
+        self.maxsize(8*SQUARESIZE,8*SQUARESIZE + SQUARESIZE//2)
         self.wm_title("Chess")
-        self.iconphoto(self,ImageTk.PhotoImage(file=".\img\\blkKing.png"))
+        self.iconphoto(self,ImageTk.PhotoImage(file=".\img\\blkKnight.png"))
         self.center()
 
         #Initialize Scenes
@@ -33,7 +34,7 @@ class ChessApplication(tk.Tk):
         width = win.winfo_width()
         height = win.winfo_height()
         x = (win.winfo_screenwidth() // 2) - (width // 2)
-        y = (win.winfo_screenheight() // 2) - (height // 2)
+        y = (win.winfo_screenheight() // 2) - (height // 3)
         win.geometry('{}x{}+{}+{}'.format(width, height, x, y-100))
 
     def show_scene(self,cont):
@@ -48,7 +49,7 @@ class ChessGUI(tk.Canvas):
         self.grid(row=0,column=0,sticky="nsew")
         self.imgs = []
         self.game = Game()
-        self.lastClicked = None
+        self.firstInput = None
         self.lastHighlight = None
         self.bind("<Button-1>",self.handle_click)
         self.redraw()
@@ -60,26 +61,39 @@ class ChessGUI(tk.Canvas):
         letter = chr(x_coord+97)
         num = str(8-y_coord)
         square = letter+num
-        if self.lastClicked == None:
+        if self.firstInput == None:
             if self.game.board.hasColorPiece(self.game.turn,square):
-                self.lastClicked = square
-                img = ImageTk.PhotoImage(file=".\img\highlight.png")
+                self.firstInput = square
+                raw_img = Image.open(".\img\highlight.png")
+                resized = raw_img.resize((SQUARESIZE,SQUARESIZE),Image.ANTIALIAS)
+                img = ImageTk.PhotoImage(resized)
                 self.create_image(SQUARESIZE*x_coord,SQUARESIZE*y_coord,image=img,anchor=tk.NW)
                 self.lastHighlight = img
-        elif self.lastClicked != None:
-            if self.game.board.hasColorPiece(self.game.turn,self.lastClicked):
-                pieceName = self.game.board.getPiece(self.lastClicked).name
-                if self.game.ruleSet.validateMove(pieceName,self.game.turn,self.game.turn,self.game.board,self.lastClicked,square):
-                    self.game.board = self.game.board.makeMove(self.lastClicked,square)
+            else:
+                self.lastHighlight = None
+        elif self.firstInput != None:
+            if self.game.board.hasColorPiece(self.game.turn,self.firstInput):
+                pieceName = self.game.board.getPiece(self.firstInput).name
+                if self.game.ruleSet.validateMove(pieceName,self.game.turn,self.game.turn,self.game.board,self.firstInput,square):
+                    self.game.board = self.game.board.makeMove(self.firstInput,square)
                     self.lastHighlight = None
-                    self.redraw()
                     self.game.changeTurn()
-                self.lastClicked = None
+                    if(self.game.turn=="White"):
+                        winsound.Beep(260,150)
+                    else:
+                        winsound.Beep(200,150)
+                    self.redraw()
+                self.firstInput = None
+                return
             if self.game.board.hasAnyPiece(square):
-                self.lastClicked = square
-                img = ImageTk.PhotoImage(file=".\img\highlight.png")
+                self.firstInput = square
+                raw_img = Image.open(".\img\highlight.png")
+                resized = raw_img.resize((SQUARESIZE,SQUARESIZE),Image.ANTIALIAS)
+                img = ImageTk.PhotoImage(resized)
                 self.create_image(SQUARESIZE * x_coord, SQUARESIZE * y_coord, image=img, anchor=tk.NW)
                 self.lastHighlight = img
+            else:
+                self.firstInput = None
 
     def redraw(self):
         #Delete Old Images
@@ -87,23 +101,41 @@ class ChessGUI(tk.Canvas):
         #Redraw Squares
         for sqr in self.game.board.squares:
             if sqr.color == "Black":
-                img = ImageTk.PhotoImage(file = ".\img\\black_square.png")
+                raw_img = Image.open(".\img\\black_square.png")
             else:
-                img = ImageTk.PhotoImage(file = ".\img\\white_square.png")
+                raw_img = Image.open(".\img\\white_square.png")
+            resized = raw_img.resize((SQUARESIZE,SQUARESIZE),Image.ANTIALIAS)
+            img = ImageTk.PhotoImage(resized)
             self.create_image(SQUARESIZE*sqr.x_coord, SQUARESIZE*sqr.y_coord,image=img,anchor=tk.NW)
             self.imgs.append(img)
         #Redraw Pieces
         for piece in self.game.board.pieces:
             if piece.color == "White":
-                img = ImageTk.PhotoImage(file =(".\img\\wht"+piece.name+".png"))
+                raw_img = Image.open(".\img\\wht"+piece.name+".png")
             else:
-                img = ImageTk.PhotoImage(file =(".\img\\blk"+piece.name+".png"))
+                raw_img = Image.open(".\img\\blk"+piece.name+".png")
             x_coord = ord(piece.square[0]) - 97
             y_coord = 8 - int(piece.square[1])
+            resized = raw_img.resize((SQUARESIZE,SQUARESIZE),Image.ANTIALIAS)
+            img = ImageTk.PhotoImage(resized)
             self.create_image(SQUARESIZE*x_coord, SQUARESIZE*y_coord,image=img,anchor=tk.NW)
             self.imgs.append(img)
+        #Redraw Bottom Menu
+        self.create_rectangle((0,8*SQUARESIZE,8*SQUARESIZE,8*SQUARESIZE+SQUARESIZE//2),fill="Black",outline="Black")
+        displayMessage = self.game.turn+" To Move..."
+        if self.game.isChecked(self.game.turn):
+            if len(self.game.ruleSet.findAllLegalMoves(self.game.board,self.game.turn))==0:
+                displayMessage = "Checkmate,"
+                winsound.Beep(500,100)
+                winsound.Beep(500,100)
+                if(self.game.turn=="White"):
+                    displayMessage += " Black Wins!"
+                else:
+                    displayMessage += " White Wins!"
+            else:
+                displayMessage = "Check! " + displayMessage
+                winsound.Beep(500,150)
+        self.create_text((4*SQUARESIZE,8*SQUARESIZE+(SQUARESIZE//4)),text=displayMessage,font=("Fixedsys", str(int(16*SCALE_MULTIPLIER))),fill="White")
 
 app = ChessApplication()
 app.mainloop()
-
-
