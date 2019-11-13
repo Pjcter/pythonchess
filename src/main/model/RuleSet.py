@@ -69,12 +69,26 @@ class RuleSet:
                 return True
             elif color == "White" and board.hasColorPiece("Black",s2):
                 return True
+            #Case 3.5 Leftward EnPassant
+            if color == "Black" and board.hasColorPiece("White",chr(s2l)+"4"):
+                if board.getPiece(chr(s2l)+"4").name == "Pawn":
+                    return board.getPiece(chr(s2l)+"4").justMoved2
+            elif color == "White" and board.hasColorPiece("Black",chr(s2l)+"5"):
+                if board.getPiece(chr(s2l)+"5").name == "Pawn":
+                    return board.getPiece(chr(s2l)+"5").justMoved2
         #Case 4: Rightward Capturing
         if s1l == s2l+1 and s1n == (s2n - move):
             if color == "Black" and board.hasColorPiece("White",s2):
                 return True
             elif color == "White" and board.hasColorPiece("Black",s2):
                 return True
+            if color == "Black" and board.hasColorPiece("White",chr(s2l)+"4"):
+                if board.getPiece(chr(s2l)+"4").name == "Pawn":
+                    return board.getPiece(chr(s2l)+"4").justMoved2
+            elif color == "White" and board.hasColorPiece("Black",chr(s2l)+"5"):
+                if board.getPiece(chr(s2l)+"5").name == "Pawn":
+                    return board.getPiece(chr(s2l)+"5").justMoved2
+            #Case 4.5 Rightward EnPassant
         return False
 
 

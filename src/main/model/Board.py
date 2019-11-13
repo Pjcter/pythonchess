@@ -107,6 +107,12 @@ class Board:
         p.square = None
         self.pieces.remove(p)
 
+    def promote(self,origin,destination):
+        p = self.getPiece(origin)
+        self.pieces.remove(p)
+        q = Queen(p.color,destination)
+        self.pieces.append(q)
+
     def getPiece(self,square):
         for piece in self.pieces:
             if piece.square == square:

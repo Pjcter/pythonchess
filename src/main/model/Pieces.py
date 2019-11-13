@@ -27,18 +27,20 @@ class Pawn(Piece):
         self.justMoved2 = False
 
     def move(self,destination,board):
+        if self.isEnPassant(destination,board):
+            captureSquare = destination[0] + self.square[1]
+            board.makeCapture(captureSquare)
         if self.isCapture(destination,board):
             board.makeCapture(destination)
         if self.isDoubleMove(destination,board):
             self.justMoved2 = True
-        if self.isEnPassant(destination,board):
-            pass
         if self.isPromote(destination,board):
-            pass
+            board.promote(self.square,destination)
         self.square = destination
 
     def isEnPassant(self,destination,board):
-        # DO THIS
+        if self.color == "White" and destination[0] != self.square[0]:
+            return not self.isCapture(destination,board)
         return False
 
     def isPromote(self,destination,board):

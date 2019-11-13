@@ -14,20 +14,36 @@ class ChessApplication(tk.Tk):
         tk.Tk.__init__(self,*args,**kwargs)
 
         #Create Main Window
-        window = tk.Frame(self)
-        window.pack(side="top", fill = "both", expand = True)
-        window.rowconfigure(0,weight=1)
-        window.columnconfigure(0,weight=1)
+        self.window = tk.Frame(self)
+        self.window.pack(side="top", fill = "both", expand = True)
+        self.window.rowconfigure(0,weight=1)
+        self.window.columnconfigure(0,weight=1)
         self.minsize(8*SQUARESIZE,8*SQUARESIZE + SQUARESIZE//2)
         self.maxsize(8*SQUARESIZE,8*SQUARESIZE + SQUARESIZE//2)
         self.wm_title("Chess")
         self.iconphoto(self,ImageTk.PhotoImage(file=".\img\\blkKnight.png"))
-        self.center()
 
         #Initialize Scenes
         self.scenes = {}
-        self.scenes[ChessGUI] = ChessGUI(window, self)
-        self.show_scene(ChessGUI)
+
+        #For now, main page is a new game
+        self.new_game()
+
+        #Create Option Menu
+        menubar = tk.Menu(self)
+        menubar.add_command(label="New Game", command=self.new_game)
+        aimenu = tk.Menu(menubar,tearoff=0)
+        easycolormenu = tk.Menu(aimenu,tearoff=0)
+        easycolormenu.add_command(label="Black")
+        easycolormenu.add_command(label="White")
+        hardcolormenu = tk.Menu(aimenu,tearoff=0)
+        hardcolormenu.add_command(label="Black")
+        hardcolormenu.add_command(label="White")
+        aimenu.add_cascade(label="Easy",menu=easycolormenu)
+        aimenu.add_cascade(label="Hard",menu=hardcolormenu)
+        menubar.add_cascade(label="Versus AI",menu=aimenu)
+        self.config(menu=menubar)
+        self.center()
 
     def center(win):
         win.update_idletasks()
@@ -40,6 +56,11 @@ class ChessApplication(tk.Tk):
     def show_scene(self,cont):
         scene = self.scenes[cont]
         #TODO: redraw scene on top
+
+    def new_game(self):
+        self.scenes={}
+        self.scenes[ChessGUI] = ChessGUI(self.window,self)
+        self.show_scene(ChessGUI)
 
 
 #This is a Canvas scene that represents a game of chess.
@@ -76,6 +97,7 @@ class ChessGUI(tk.Canvas):
                 pieceName = self.game.board.getPiece(self.firstInput).name
                 if self.game.ruleSet.validateMove(pieceName,self.game.turn,self.game.turn,self.game.board,self.firstInput,square):
                     self.game.board = self.game.board.makeMove(self.firstInput,square)
+                    self.firstInput = None
                     self.lastHighlight = None
                     self.game.changeTurn()
                     if(self.game.turn=="White"):
@@ -83,8 +105,9 @@ class ChessGUI(tk.Canvas):
                     else:
                         winsound.Beep(200,150)
                     self.redraw()
+                    return
+                self.lastHighlight = None
                 self.firstInput = None
-                return
             if self.game.board.hasAnyPiece(square):
                 self.firstInput = square
                 raw_img = Image.open(".\img\highlight.png")
