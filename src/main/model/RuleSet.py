@@ -52,8 +52,10 @@ class RuleSet:
         s2n = int(s2[1])
         if color == "White":
             move = 1
+            enpassantRow = 6;
         elif color == "Black":
             move = -1
+            enpassantRow = 3;
         #Case 1: Moving Forward Once
         if s1l == s2l and s1n == (s2n - move):
             if not board.hasAnyPiece(s2):
@@ -63,32 +65,19 @@ class RuleSet:
             if not board.hasAnyPiece(s2) and not board.hasAnyPiece(chr(s1l)+str(s2n-move)):
                     if(color == "White" and s1[1] == "2" ) or (color == "Black" and s1[1] == "7"):
                         return True
-        #Case 3: Leftward Capturing
-        if s1l == s2l-1 and s1n == (s2n - move):
-            if color == "Black" and board.hasColorPiece("White",s2):
+        #Case 3: Capturing:
+        if board.hasColorPiece(self.enemyColor(color), s2):
+            #3.1: Left Capture
+            if s1l == s2l-1 and s1n == (s2n - move):
                 return True
-            elif color == "White" and board.hasColorPiece("Black",s2):
+            #3.2 Right Capture
+            if s1l == s2l + 1 and s1n == (s2n - move):
                 return True
-            #Case 3.5 Leftward EnPassant
-            if color == "Black" and board.hasColorPiece("White",chr(s2l)+"4"):
-                if board.getPiece(chr(s2l)+"4").name == "Pawn":
-                    return board.getPiece(chr(s2l)+"4").justMoved2
-            elif color == "White" and board.hasColorPiece("Black",chr(s2l)+"5"):
-                if board.getPiece(chr(s2l)+"5").name == "Pawn":
-                    return board.getPiece(chr(s2l)+"5").justMoved2
-        #Case 4: Rightward Capturing
-        if s1l == s2l+1 and s1n == (s2n - move):
-            if color == "Black" and board.hasColorPiece("White",s2):
-                return True
-            elif color == "White" and board.hasColorPiece("Black",s2):
-                return True
-            if color == "Black" and board.hasColorPiece("White",chr(s2l)+"4"):
-                if board.getPiece(chr(s2l)+"4").name == "Pawn":
-                    return board.getPiece(chr(s2l)+"4").justMoved2
-            elif color == "White" and board.hasColorPiece("Black",chr(s2l)+"5"):
-                if board.getPiece(chr(s2l)+"5").name == "Pawn":
-                    return board.getPiece(chr(s2l)+"5").justMoved2
-            #Case 4.5 Rightward EnPassant
+        #Case 4: En-Passants:
+        if (s1l == s2l + 1 and s1n == (s2n - move)) or (s1l == s2l - 1 and s1n == (s2n - move)):
+            if s2n == enpassantRow and board.hasColorPiece(self.enemyColor(color),chr(s2l)+str(enpassantRow-move)):
+                if board.getPiece(chr(s2l)+str(enpassantRow-move)).name == "Pawn":
+                    return board.getPiece(chr(s2l)+str(enpassantRow-move)).justMoved2
         return False
 
 
@@ -285,6 +274,12 @@ class RuleSet:
                 if self.validateMove(p.name,p.color,p.color,board,location,sqr):
                     moves.append(sqr)
         return moves
+
+    def enemyColor(self,color):
+        if color == "White":
+            return "Black"
+        elif color == "Black":
+            return "White"
 
     def findAllLegalMoves(self,board,color):
         moves = []

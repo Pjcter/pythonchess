@@ -132,5 +132,5 @@ class Board:
                 else:
                     row += "    "
             brd += row + '\n'
-        brd += "  a   b   c   d   e   f   g   i"
+        brd += "  a   b   c   d   e   f   g   h"
         return brd

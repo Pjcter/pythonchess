@@ -4,25 +4,18 @@ def __main__():
     while True:
         print(game.board.toString())
         print(game.turn + "'s Turn!")
-        #print(game.ruleSet.findAllLegalMoves(game.board,game.turn))
         if(game.isChecked(game.turn)):
             print("CHECK!")
-        inpt = input("Enter move as: \"[Piece] [From] [To]\": ")
+        inpt = input("Enter move as: \"[squareFrom] [squareTo]\": ")
         info = inpt.split(" ")
-        if info == "Q" or info.__len__() != 3:
+        if info == "Q" or info.__len__() != 2:
             break
-        piece = info[0]
-        s1 = info[1]
-        s2 = info[2]
-        if game.board.hasGivenPiece(piece, game.turn, s1):
-            if game.ruleSet.validateMove(piece, game.turn, game.turn, game.board, s1, s2):
-                game.board = game.board.makeMove(s1, s2)
-                print("Move made!")
-                game.changeTurn()
-            else:
-                print("Move failed!")
+        s1 = info[0]
+        s2 = info[1]
+        if game.makeMove(s1,s2):
+            print("Moved made!")
         else:
-            print("Invalid input!")
+            print("Moved failed")
     print("Exiting Chess!")
 
 __main__()

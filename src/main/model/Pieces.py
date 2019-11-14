@@ -40,7 +40,9 @@ class Pawn(Piece):
 
     def isEnPassant(self,destination,board):
         if self.color == "White" and destination[0] != self.square[0]:
-            return not self.isCapture(destination,board)
+            return not board.hasAnyPiece(destination) and self.isCapture(destination[0] + "5", board)
+        elif self.color == "Black" and destination[0] != self.square[0]:
+            return not board.hasAnyPiece(destination) and self.isCapture(destination[0] + "4", board)
         return False
 
     def isPromote(self,destination,board):
