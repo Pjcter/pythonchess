@@ -1,48 +1,46 @@
 class Piece:
-    'This piece is an abstract class representing a generic chess piece'
+    """This piece is an abstract class representing a generic chess piece"""
 
-    #Constructor
     def __init__(self,color,value,name,square):
         self.color = color
         self.value = value
         self.name = name
         self.square = square
 
-    def toString(self):
+    def to_string(self):
         return self.color[0] + self.name[0]
-    def isCapture(self, destination, board):
-        if (board.hasAnyPiece(destination)):
-            return True
-        else:
-            return False
 
-    def move(self,destination,board):
-        if self.isCapture(destination, board):
-            board.makeCapture(destination)
+    def is_capture(self, destination, board):
+        return board.has_any_piece(destination)
+
+    def move(self, destination, board):
+        if self.is_capture(destination, board):
+            board.make_capture(destination)
         self.square = destination
 
+
 class Pawn(Piece):
-    def __init__(self,color,square):
-        Piece.__init__(self,color,1,"Pawn",square)
-        self.justMoved2 = False
+    def __init__(self, color, square):
+        Piece.__init__(self, color, 10, "Pawn", square)
+        self.just_moved_2 = False
 
     def move(self,destination,board):
         if self.isEnPassant(destination,board):
             captureSquare = destination[0] + self.square[1]
-            board.makeCapture(captureSquare)
-        if self.isCapture(destination,board):
-            board.makeCapture(destination)
+            board.make_capture(captureSquare)
+        if self.is_capture(destination, board):
+            board.make_capture(destination)
         if self.isDoubleMove(destination,board):
-            self.justMoved2 = True
+            self.just_moved_2 = True
         if self.isPromote(destination,board):
             board.promote(self.square,destination)
         self.square = destination
 
     def isEnPassant(self,destination,board):
         if self.color == "White" and destination[0] != self.square[0]:
-            return not board.hasAnyPiece(destination) and self.isCapture(destination[0] + "5", board)
+            return not board.has_any_piece(destination) and self.is_capture(destination[0] + "5", board)
         elif self.color == "Black" and destination[0] != self.square[0]:
-            return not board.hasAnyPiece(destination) and self.isCapture(destination[0] + "4", board)
+            return not board.has_any_piece(destination) and self.is_capture(destination[0] + "4", board)
         return False
 
     def isPromote(self,destination,board):
@@ -63,7 +61,7 @@ class Pawn(Piece):
         cpy = Pawn(self.color,self.square)
         return cpy
 
-    def toString(self):
+    def to_string(self):
         if self.color == "White":
             return "♙"
         else:
@@ -71,11 +69,11 @@ class Pawn(Piece):
 
 class Rook(Piece):
     def __init__(self,color,square):
-        Piece.__init__(self,color,5,"Rook",square)
+        Piece.__init__(self,color,50,"Rook",square)
 
     def move(self,destination,board):
-        if self.isCapture(destination,board):
-            board.makeCapture(destination)
+        if self.is_capture(destination, board):
+            board.make_capture(destination)
         self.square = destination
         if self.color == "White":
             board.whiteCastle = True
@@ -86,7 +84,7 @@ class Rook(Piece):
         cpy = Rook(self.color, self.square)
         return cpy
 
-    def toString(self):
+    def to_string(self):
         if self.color == "White":
             return "♖"
         else:
@@ -94,13 +92,13 @@ class Rook(Piece):
 
 class Bishop(Piece):
     def __init__(self,color,square):
-        Piece.__init__(self,color,3,"Bishop",square)
+        Piece.__init__(self,color,30,"Bishop",square)
 
     def copy(self):
         cpy = Bishop(self.color,self.square)
         return cpy
 
-    def toString(self):
+    def to_string(self):
         if self.color == "White":
             return "♗"
         else:
@@ -108,13 +106,13 @@ class Bishop(Piece):
 
 class Knight(Piece):
     def __init__(self,color,square):
-        Piece.__init__(self,color,3.5,"Knight",square)
+        Piece.__init__(self,color,30,"Knight",square)
 
     def copy(self):
         cpy = Knight(self.color,self.square)
         return cpy
 
-    def toString(self):
+    def to_string(self):
         if self.color == "White":
             return "♘"
         else:
@@ -122,32 +120,31 @@ class Knight(Piece):
 
 class King(Piece):
     def __init__(self,color,square):
-        Piece.__init__(self,color,10,"King",square)
+        Piece.__init__(self,color,900,"King",square)
 
     def move(self,destination,board):
-        if self.isCapture(destination,board):
-            board.makeCapture(destination)
-        #Check if castle, if so, move the rook too.
-        if (self.color == "White" and board.whiteCastle == False ) or (self.color == "Black" and board.blackCastle == False):
-            if(self.color == "White" and destination == "c1"):
-                board.getPiece("a1").move("d1",board)
-            elif(self.color == "White" and destination == "g1"):
-                board.getPiece("h1").move("f1",board)
-            elif(self.color == "Black" and destination == "c8"):
-                board.getPiece("a8").move("d8",board)
-            elif(self.color == "Black" and destination == "g8"):
-                board.getPiece("h8").move("f8",board)
+        if self.is_capture(destination, board):
+            board.make_capture(destination)
+        if (self.color == "White" and not board.white_castle) or (self.color == "Black" and not board.black_castle):
+            if self.color == "White" and destination == "c1":
+                board.get_piece("a1").move("d1", board)
+            elif self.color == "White" and destination == "g1":
+                board.get_piece("h1").move("f1", board)
+            elif self.color == "Black" and destination == "c8":
+                board.get_piece("a8").move("d8", board)
+            elif self.color == "Black" and destination == "g8":
+                board.get_piece("h8").move("f8", board)
         if self.color == "White":
-            board.whiteCastle = True
+            board.white_castle = True
         else:
-            board.blackCastle = True
+            board.black_castle = True
         self.square = destination
 
     def copy(self):
         cpy = King(self.color,self.square)
         return cpy
 
-    def toString(self):
+    def to_string(self):
         if self.color == "White":
             return "♔"
         else:
@@ -155,13 +152,13 @@ class King(Piece):
 
 class Queen(Piece):
     def __init__(self,color,square):
-        Piece.__init__(self,color,10,"Queen",square)
+        Piece.__init__(self,color,100,"Queen",square)
 
     def copy(self):
         cpy = Queen(self.color,self.square)
         return cpy
 
-    def toString(self):
+    def to_string(self):
         if self.color == "White":
             return "♕"
         else:

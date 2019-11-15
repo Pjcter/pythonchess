@@ -1,10 +1,13 @@
 from src.main.model.Game import *
+from src.main.model.AIGame import *
+
 def __main__():
-    game = Game()
+    game = AIGame("Black",3)
+    #game = Game()
     while True:
-        print(game.board.toString())
+        print(game.board.to_string())
         print(game.turn + "'s Turn!")
-        if(game.isChecked(game.turn)):
+        if(game.is_checked(game.turn)):
             print("CHECK!")
         inpt = input("Enter move as: \"[squareFrom] [squareTo]\": ")
         info = inpt.split(" ")
@@ -12,7 +15,7 @@ def __main__():
             break
         s1 = info[0]
         s2 = info[1]
-        if game.makeMove(s1,s2):
+        if game.make_move(s1, s2):
             print("Moved made!")
         else:
             print("Moved failed")

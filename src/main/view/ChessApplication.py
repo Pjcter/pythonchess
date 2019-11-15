@@ -2,6 +2,7 @@ import tkinter as tk
 from PIL import Image,ImageTk
 import winsound
 from src.main.model.Game import Game
+from src.main.model.AIGame import AIGame
 
 # Constant Declarations
 SCALE_MULTIPLIER = 1.5
@@ -27,18 +28,18 @@ class ChessApplication(tk.Tk):
         self.scenes = {}
 
         # For now, main page is a new game
-        self.new_game()
+        self.new_game("Normal")
 
         # Create Option Menu
         menu_bar = tk.Menu(self)
-        menu_bar.add_command(label="New Game", command=self.new_game)
+        menu_bar.add_command(label="New Game", command=lambda: self.new_game("Normal"))
         ai_menu = tk.Menu(menu_bar, tearoff=0)
         easy_color_menu = tk.Menu(ai_menu, tearoff=0)
-        easy_color_menu.add_command(label="Black")
-        easy_color_menu.add_command(label="White")
+        easy_color_menu.add_command(label="Black", command=lambda: self.new_game("BlackEasy"))
+        easy_color_menu.add_command(label="White", command=lambda: self.new_game("WhiteEasy"))
         hard_color_menu = tk.Menu(ai_menu, tearoff=0)
-        hard_color_menu.add_command(label="Black")
-        hard_color_menu.add_command(label="White")
+        hard_color_menu.add_command(label="Black", command=lambda: self.new_game("BlackHard"))
+        hard_color_menu.add_command(label="White", command=lambda: self.new_game("WhiteHard"))
         ai_menu.add_cascade(label="Easy", menu=easy_color_menu)
         ai_menu.add_cascade(label="Hard", menu=hard_color_menu)
         menu_bar.add_cascade(label="Versus AI", menu=ai_menu)
@@ -58,22 +59,26 @@ class ChessApplication(tk.Tk):
         self.tkraise(scene)
         # TODO: redraw scene on top
 
-    def new_game(self):
-        self.scenes = {}
-        self.scenes[ChessGUI] = ChessGUI(self.window,self)
-        self.show_scene(ChessGUI)
+    def new_game(self,type):
+        self.scenes[ChessGUI] = ChessGUI(self.window,self,type)
 
 
-# This is a Canvas scene that represents a game of chess.
 class ChessGUI(tk.Canvas):
-    def __init__(self, parent,controller):
+    def __init__(self, parent,controller,type):
         tk.Canvas.__init__(self, parent)
         self.grid(row=0, column=0, sticky="nsew")
         self.imgs = []
-        self.game = Game()
-        self.firstInput = None
-        self.lastHighlight = None
+        self.first_input = None
+        self.last_highlight = None
         self.bind("<Button-1>", self.handle_click)
+        games = {
+            "Normal": Game(),
+            "BlackEasy": AIGame("Black",1),
+            "BlackHard": AIGame("Black",1),
+            "WhiteEasy": AIGame("White",2),
+            "WhiteHard": AIGame("White",2)
+        }
+        self.game = games.get(type)
         self.redraw()
 
     def handle_click(self, event):
@@ -83,33 +88,35 @@ class ChessGUI(tk.Canvas):
         letter = chr(x_coord+97)
         num = str(8-y_coord)
         square = letter+num
-        if self.firstInput is None:
+        if self.first_input is None:
             # First click:
-            if self.game.board.hasColorPiece(self.game.turn, square):
+            if self.game.board.has_color_piece(self.game.turn, square):
                 # Your first click is on one of your pieces, highlight it
-                self.firstInput = square
-                self.lastHighlight = self.draw_image(".\\img\\highlight.png", x_coord, y_coord)
+                self.first_input = square
+                self.last_highlight = self.draw_image(".\\img\\highlight.png", x_coord, y_coord)
             else:
-                self.lastHighlight = None
-        elif self.firstInput is not None:
+                self.last_highlight = None
+        elif self.first_input is not None:
             # Second click:
-            if self.game.makeMove(self.firstInput, square):
+            if self.game.make_move(self.first_input, square):
                 # Second click is a valid move, make it and reset
                 if self.game.turn == "White":
                     winsound.Beep(260, 150)
+                    pass
                 else:
                     winsound.Beep(200, 150)
-                self.lastHighlight = None
-                self.firstInput = None
+                    pass
+                self.last_highlight = None
+                self.first_input = None
                 self.redraw()
-            elif self.game.board.hasColorPiece(self.game.turn, square):
+            elif self.game.board.has_color_piece(self.game.turn, square):
                 # Second click is not a valid move, but one of your pieces. Highlight it
-                self.firstInput = square
-                self.lastHighlight = self.draw_image(".\\img\\highlight.png", x_coord, y_coord)
+                self.first_input = square
+                self.last_highlight = self.draw_image(".\\img\\highlight.png", x_coord, y_coord)
             else:
                 # Second click is not one of your pieces, and not a valid move. Reset highlights/inputs
-                self.firstInput = None
-                self.lastHighlight = None
+                self.first_input = None
+                self.last_highlight = None
 
     def redraw(self):
         # Delete Old Images
@@ -133,8 +140,8 @@ class ChessGUI(tk.Canvas):
         # Redraw Bottom Menu
         self.create_rectangle((0, 8*SQUARESIZE, 8*SQUARESIZE, 8*SQUARESIZE+SQUARESIZE//2), fill="Black", outline="Black")
         display_message = self.game.turn+" To Move..."
-        if self.game.isChecked(self.game.turn):
-            if self.game.isCheckmated(self.game.turn):
+        if self.game.is_checked(self.game.turn):
+            if self.game.is_checkmated(self.game.turn):
                 display_message = "Checkmate,"
                 winsound.Beep(500, 100)
                 winsound.Beep(500, 100)
@@ -145,7 +152,7 @@ class ChessGUI(tk.Canvas):
             else:
                 display_message = "Check! " + display_message
                 winsound.Beep(500, 150)
-        if self.game.isStalemated(self.game.turn):
+        if self.game.is_stalemated(self.game.turn):
             display_message = "Stalemate, Draw!"
         self.create_text((4*SQUARESIZE, 8*SQUARESIZE+(SQUARESIZE//4)), text=display_message, font=("Fixedsys", str(int(16*SCALE_MULTIPLIER))), fill="White")
 
